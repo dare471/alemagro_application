@@ -7,3 +7,5 @@ abstract class CalendarEvent extends Equatable {
 }
 
 class FetchMeetings extends CalendarEvent {}
+
+class ToggleCalendarViewEvent extends CalendarEvent {}

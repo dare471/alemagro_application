@@ -1,3 +1,4 @@
+import 'package:alemagro_application/blocs/calendar/calendar_bloc.dart';
 import 'package:alemagro_application/blocs/pincode/pin_code_bloc.dart';
 import 'package:alemagro_application/blocs/pincode/pin_code_event.dart';
 import 'package:alemagro_application/screens/staff/main.dart';
@@ -82,13 +83,13 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
               children: [
                 const SizedBox(
                     width:
-                        40), // Этот виджет нужен для центрирования кнопки "0" и кнопки удаления по сетке
+                        35), // Этот виджет нужен для центрирования кнопки "0" и кнопки удаления по сетке
                 // Кнопка "0"
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     primary: Color(0xFF1462A6),
                     shape: const CircleBorder(),
-                    fixedSize: Size(105, 105),
+                    fixedSize: const Size(92, 92),
                   ),
                   onPressed: () => _onNumButtonPressed("0"),
                   child: const Text(
@@ -108,7 +109,7 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 30),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF1462A6),
@@ -117,12 +118,18 @@ class _PinSetupScreenState extends State<PinSetupScreen> {
                       borderRadius: BorderRadius.all(Radius.circular(10)))),
               onPressed: () {
                 context.read<PinBloc>().add(SavePinEvent(_enteredPin));
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => HomePage(),
-                ));
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider<CalendarBloc>(
+                      create: (context) => CalendarBloc()..add(FetchMeetings()),
+                      child: HomePage(),
+                    ),
+                  ),
+                );
               },
               child: const Text(
-                "Сохранить Пин-Код",
+                "Сохранить PIN-код",
                 style: TextStyle(fontSize: 19),
               ),
             ),

@@ -1,4 +1,4 @@
-class analyticDetailUser {
+class UserAnalyticsData {
   final int userId;
   final String userName;
   final String provider;
@@ -11,7 +11,7 @@ class analyticDetailUser {
   final int countShipped;
   final double executionPlan;
 
-  analyticDetailUser({
+  UserAnalyticsData({
     required this.userId,
     required this.userName,
     required this.provider,
@@ -27,8 +27,8 @@ class analyticDetailUser {
 
   // Добавим методы `fromJSON` и `toJSON` для сериализации.
 
-  factory analyticDetailUser.fromJSON(Map<String, dynamic> json) {
-    return analyticDetailUser(
+  factory UserAnalyticsData.fromJSON(Map<String, dynamic> json) {
+    return UserAnalyticsData(
       userId: json['userId'],
       userName: json['userName'],
       provider: json['provider'],
@@ -62,13 +62,13 @@ class analyticDetailUser {
 }
 
 class UserAnalyticsList {
-  final List<analyticDetailUser> analytics;
+  final List<UserAnalyticsData> analytics;
 
   UserAnalyticsList({required this.analytics});
 
   factory UserAnalyticsList.fromJSON(List<dynamic> jsonList) {
-    List<analyticDetailUser> analyticsList =
-        jsonList.map((json) => analyticDetailUser.fromJSON(json)).toList();
+    List<UserAnalyticsData> analyticsList =
+        jsonList.map((json) => UserAnalyticsData.fromJSON(json)).toList();
     return UserAnalyticsList(analytics: analyticsList);
   }
 }

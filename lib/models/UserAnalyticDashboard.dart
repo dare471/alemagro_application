@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class UserStats {
   final int userId;
   final String userName;
@@ -7,7 +9,7 @@ class UserStats {
   final String factCountProduct;
   final String sumShipment;
   final String countShipment;
-  final double executionPlan;
+  final int executionPlan;
 
   UserStats({
     required this.userId,
@@ -21,43 +23,28 @@ class UserStats {
     required this.executionPlan,
   });
 
-  // поля сделаны nullable, добавлены значения по умолчанию или исключения
   factory UserStats.fromJson(Map<String, dynamic> json) {
-    if (json['data'][0]['userId'] == null) {
-      throw Exception("userId is null");
-    }
-    if (json['data'][0]['executionPlan'] == null) {
-      throw Exception("executionPlan is null");
-    }
     return UserStats(
-      userId: json['data'][0]['userId'] as int,
-      userName:
-          json['data'][0]['userName'] ?? "Unknown", // значение по умолчанию
-      countProduct: json['data'][0]['countProduct'] ?? "0",
-      planSum: json['data'][0]['planSum'] ?? "0",
-      planCountProduct: json['data'][0]['planCountProduct'] ?? "0",
-      factCountProduct: json['data'][0]['factCountProduct'] ?? "0",
-      sumShipment: json['data'][0]['sumShipment'] ?? "0",
-      countShipment: json['data'][0]['countShipment'] ?? "0",
-      executionPlan: (json['data'][0]['executionPlan'] as num)
-          .toDouble(), // сначала кастуем к num, потом к double
+      userId: json['userId'],
+      userName: json['userName'],
+      countProduct: json['countProduct'],
+      planSum: json['planSum'],
+      planCountProduct: json['planCountProduct'],
+      factCountProduct: json['factCountProduct'],
+      sumShipment: json['sumShipment'],
+      countShipment: json['countShipment'],
+      executionPlan: json['executionPlan'],
     );
   }
 }
 
-class UserStatsList {
-  final List<UserStats> data;
-
-  UserStatsList({
-    required this.data,
-  });
-
-  factory UserStatsList.fromJson(Map<String, dynamic> json) {
-    var list = json['data'] as List;
-    List<UserStats> dataList = list.map((i) => UserStats.fromJson(i)).toList();
-
-    return UserStatsList(
-      data: dataList,
-    );
+List<UserStats> parseUserStats(String responseBody) {
+  try {
+    final parsed = json.decode(responseBody);
+    final List<dynamic> dataList = parsed['data'];
+    return dataList.map<UserStats>((json) => UserStats.fromJson(json)).toList();
+  } catch (e) {
+    print('Error parsing user stats: $e');
+    rethrow; // Чтобы ошибка была перехвачена в `_onFetchUserAnalytics`
   }
 }

@@ -25,3 +25,7 @@ class MeetingsFetchFailed extends CalendarState {
   @override
   List<Object> get props => [error];
 }
+
+class CalendarMonthViewState extends CalendarState {}
+
+class CalendarWeekViewState extends CalendarState {}

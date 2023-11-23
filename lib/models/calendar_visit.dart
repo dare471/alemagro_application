@@ -3,6 +3,8 @@ class Meeting {
   final int clientId;
   final int statusVisit;
   final DateTime date;
+  final DateTime dateStart;
+  final DateTime dateFinish;
   final String targetDescription;
   final String clientName;
   final String clientAddress;
@@ -14,6 +16,8 @@ class Meeting {
     required this.clientId,
     required this.statusVisit,
     required this.date,
+    required this.dateStart,
+    required this.dateFinish,
     required this.targetDescription,
     required this.clientName,
     required this.clientAddress,
@@ -28,13 +32,23 @@ class Meeting {
       clientId: json['clientId'],
       statusVisit: json['statusVisit'],
       date: DateTime.parse(json['dateVisit']),
+      dateStart: json['properties']['startVisit'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(json['properties']
+                  ['startVisit'] *
+              1000) // If timestamp is in seconds
+          : DateTime.now(), // Default or error handling
+      dateFinish: json['properties']['finishVisit'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(json['properties']
+                  ['finishVisit'] *
+              1000) // If timestamp is in seconds
+          : DateTime.now(),
       targetDescription: json['targetDescription'],
       clientName: json['properties']['clientName'],
-      clientAddress: json['properties']['clientAddres'],
-      typeVisitName:
-          json['properties']?['typeVisitName'] ?? null, // вложенное свойство
-
-      // Инициализация других полей из json
+      clientAddress: json['properties']
+          ['clientAddres'], // Ensure this key matches your JSON key
+      typeVisitName: json['properties']
+          ['typeVisitName'], // Handle nulls as per your requirement
+      // ... other fields
     );
   }
 }
