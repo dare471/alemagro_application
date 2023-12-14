@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class DatabaseHelper {
   static const String _userCredentialsBox = 'user_credentials';
@@ -12,8 +13,12 @@ class DatabaseHelper {
 
   // Инициализация Hive и открытие "боксов" (аналог таблиц в SQLite)
   static Future<void> initHive() async {
-    final appDocumentDir = await getApplicationDocumentsDirectory();
-    Hive.init(appDocumentDir.path);
+    if (!kIsWeb) {
+      final appDocumentDir = await getApplicationDocumentsDirectory();
+      Hive.init(appDocumentDir.path);
+    } else {
+      Hive.initFlutter();
+    }
 
     await Hive.openBox<Map>(_userCredentialsBox);
     await Hive.openBox<Map>(_userProfileBox);

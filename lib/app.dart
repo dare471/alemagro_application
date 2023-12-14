@@ -25,6 +25,10 @@ class LoginPage extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
+    // Пропорции для адаптивного дизайна
+    double appBarHeightProportion = 0.4; // 40% от высоты экрана
+    double logoWidthProportion = 0.8; // 80% от ширины экрана
+    double logoHeightProportion = 0.3; // 30% от высоты экрана
     ///let's goo
     return BlocProvider<AuthBloc>(
       // создаем AuthBloc с UserRepository
@@ -72,14 +76,16 @@ class LoginPage extends StatelessWidget {
                   floating:
                       false, // AppBar будет появляться при прокрутке вверх
                   // Добавьте сюда ваше содержимое, если требуется
-                  expandedHeight: screenHeight * 0.4,
+                  expandedHeight: screenHeight * appBarHeightProportion,
                   backgroundColor: AppColors.blueDark,
                   // Это высота, при которой AppBar полностью расширяется
                   flexibleSpace: LayoutBuilder(
                     builder:
                         (BuildContext context, BoxConstraints constraints) {
                       // Определяем, расширен ли наш AppBar или свернут
-                      bool isExpanded = constraints.biggest.height == 100;
+                      bool isExpanded =
+                          constraints.biggest.height > (screenHeight * 0.4);
+
                       return Container(
                         decoration: const BoxDecoration(
                           // Добавим градиент для более красивого перехода цветов

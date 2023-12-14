@@ -14,8 +14,7 @@ void main() async {
   // Это необходимо для инициализации асинхронного кода перед запуском приложения.
   WidgetsFlutterBinding.ensureInitialized();
 
-  final userRepository =
-      UserRepository(baseUrl: 'https://crm.alemagro.com:8080/api');
+  final userRepository = UserRepository(baseUrl: 'http://10.200.100.17/api');
 
   // Инициализация Hive
   await Hive.initFlutter();
