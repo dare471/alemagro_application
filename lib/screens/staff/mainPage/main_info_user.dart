@@ -6,11 +6,14 @@ import 'package:alemagro_application/blocs/calendar/calendar_bloc.dart';
 import 'package:alemagro_application/database/database_helper.dart';
 import 'package:alemagro_application/models/calendar_visit.dart';
 import 'package:alemagro_application/screens/staff/analytics/widget_main.dart';
+import 'package:alemagro_application/screens/staff/calendar/main_list.dart';
+import 'package:alemagro_application/screens/staff/myClient/clientProfile/client_profile.dart';
 import 'package:alemagro_application/theme/app_color.dart';
 import 'package:alemagro_application/widgets/card/Card.dart';
 import 'package:alemagro_application/widgets/title/title_category.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 
 class MainInfoUser extends StatefulWidget {
@@ -47,7 +50,7 @@ class _MainInfoUserState extends State<MainInfoUser> {
                     child: buildInitialCard(context),
                   ),
                   const TitleCategory(
-                    text: "Ваши визиты",
+                    text: "Ваши визиты на сегодня",
                     fontSize: 19,
                     height: 10,
                     thicknes: 1,
@@ -72,49 +75,96 @@ Widget buildCalendar(BuildContext context) {
   return BlocProvider<CalendarBloc>(
     create: (context) => CalendarBloc()
       ..add(
-          FetchMeetings()), // Trigger fetching meetings when the widget is created
+          FetchMeetingsToday()), // Trigger fetching meetings when the widget is created
     child: Card(
       elevation: 10,
-      shadowColor: Color.fromARGB(176, 3, 90, 166),
+      shadowColor: const Color.fromARGB(176, 3, 90, 166),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: BlocBuilder<CalendarBloc, CalendarState>(
         builder: (context, state) {
           if (state is CalendarInitial) {
             return Center(child: CircularProgressIndicator());
           } else if (state is MeetingsFetched) {
-            return Column(
-              children: [
-                Text(state.meetings.length.toString()),
-                buildMeetingList(state.meetings),
-                const Divider(),
-                Container(
-                  padding: EdgeInsets.all(5),
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                      fixedSize: MaterialStateProperty.all(
-                        const Size(double.maxFinite, double.minPositive),
+            if (state.meetings.isEmpty) {
+              return Center(
+                child: Container(
+                  padding: const EdgeInsets.all(5),
+                  child: Column(
+                    children: [
+                      const Text(
+                        "Нет запланированных визитов",
+                        style: TextStyle(fontSize: 16),
                       ),
-                      backgroundColor: MaterialStateColor.resolveWith(
-                        (states) => AppColors.blueLight,
+                      const Gap(6),
+                      const Divider(
+                        height: 10,
                       ),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          fixedSize: MaterialStateProperty.all(
+                            const Size(double.maxFinite, double.minPositive),
+                          ),
+                          backgroundColor: MaterialStateColor.resolveWith(
+                            (states) => AppColors.blueDarkV2,
+                          ),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => MainListVisit()));
+                        },
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.list),
+                            Text("Показать все встречи"),
+                          ],
                         ),
                       ),
-                    ),
-                    onPressed: () {},
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.list),
-                        Text("Показать весь список"),
-                      ],
-                    ),
+                    ],
                   ),
                 ),
-              ],
-            );
+              );
+            } else {
+              return Column(
+                children: [
+                  buildMeetingList(state.meetings),
+                  const Divider(),
+                  Container(
+                    padding: EdgeInsets.all(5),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        fixedSize: MaterialStateProperty.all(
+                          const Size(double.maxFinite, double.minPositive),
+                        ),
+                        backgroundColor: MaterialStateColor.resolveWith(
+                          (states) => AppColors.blueDarkV2,
+                        ),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                      ),
+                      onPressed: () {},
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.list),
+                          Text("Показать весь список"),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            }
           } else if (state is MeetingsFetchFailed) {
             return Center(child: Text('Failed to load meetings'));
           } else {
@@ -130,12 +180,11 @@ Widget buildMeetingList(List<Meeting> meetings) {
   return ListView.builder(
     controller: ScrollController(keepScrollOffset: true),
     shrinkWrap: true,
-    itemCount: 3,
+    itemCount: meetings.length,
     itemBuilder: (context, index) {
       Meeting meeting = meetings[index];
       return ListTile(
         title: Text(meeting.clientName),
-        subtitle: Text(DateFormat('yMMMd', 'ru_RU').format(meeting.date)),
         leading: const Icon(
           Icons.date_range,
           size: 32,

@@ -150,7 +150,7 @@ class _PinCodeScreenState extends State<PinCodeScreen> {
       style: ElevatedButton.styleFrom(
           backgroundColor: const Color(0xFF1462A6),
           shape: const CircleBorder(),
-          fixedSize: Size(90.0, 90.0)),
+          fixedSize: Size(105.0, 105.0)),
       onPressed: () => _onNumButtonPressed("0"),
       child: const Text("0", style: TextStyle(fontSize: 28)),
     );
@@ -195,7 +195,12 @@ class _PinCodeScreenState extends State<PinCodeScreen> {
         // ignore: use_build_context_synchronously
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomePage()),
+          MaterialPageRoute(
+            builder: (context) => BlocProvider<CalendarBloc>(
+              create: (context) => CalendarBloc()..add(FetchMeetingsToday()),
+              child: HomePage(),
+            ),
+          ),
         );
       }
     } else {
@@ -235,14 +240,12 @@ class _PinCodeScreenState extends State<PinCodeScreen> {
         context,
         MaterialPageRoute(
           builder: (context) => BlocProvider<CalendarBloc>(
-            create: (context) => CalendarBloc()..add(FetchMeetings()),
+            create: (context) => CalendarBloc()..add(FetchMeetingsToday()),
             child: HomePage(),
           ),
         ),
       );
     } else {
-      // Показать ошибку
-      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text('Неверный PIN код')));
     }

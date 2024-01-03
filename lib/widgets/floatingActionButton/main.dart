@@ -10,10 +10,17 @@ FloatingActionButton? buildFloatingActionButton(
           backgroundColor: AppColors.blueLightV,
           onPressed: () {
             context.read<CalendarBloc>().add(ToggleCalendarViewEvent());
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) =>
+                        BlocProvider<CalendarBloc>(
+                            create: (_) => CalendarBloc())));
             // Действие при нажатии на кнопку
           },
           child: const Icon(
-            Icons.calendar_month,
+            Icons.add_circle_outline,
+            size: 36,
             color: AppColors.offWhite,
           ),
         )

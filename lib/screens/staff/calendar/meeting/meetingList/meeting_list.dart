@@ -60,7 +60,6 @@ Widget buildMeetingList(BuildContext context, List<Meeting> meetings) {
         dynamic appointments = details.appointments;
         CalendarElement view = details.targetElement;
         var clientId = appointments.isNotEmpty ? appointments[0].notes : null;
-
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -97,13 +96,14 @@ Widget buildMeetingList(BuildContext context, List<Meeting> meetings) {
 List<Appointment> getMeetingsAsAppointments(List<Meeting> meetings) {
   return meetings.map((meeting) {
     Color statusColor = getStatusColor(meeting.statusVisit);
-    String subject = '${meeting.targetDescription} - ${meeting.clientId}';
+    String subject = '${meeting.clientName}';
     return Appointment(
-      startTime: meeting.dateStart,
-      endTime: meeting.dateFinish,
       subject: subject,
-      notes: meeting.clientId.toString(),
-      color: statusColor, // Set color based on meeting status
+      notes: meeting.clientName.toString(),
+      color: statusColor,
+      startTime: meeting.date,
+      endTime: DateTime(2023, 9, 8, 10, 00),
+      // Set color based on meeting status
       // Add other relevant fields if needed
     );
   }).toList();

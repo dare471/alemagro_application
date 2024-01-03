@@ -18,8 +18,8 @@ class _HomePageState extends State<HomePage> {
   List<String> pageTitles = [
     "Главная",
     "Календарь",
-    "Клиенты",
-    "Мой профиль",
+    // "Клиенты",
+    // "Мой профиль",
   ]; // заголовки для каждой страницы
 
   int _currentIndex = 0;
@@ -62,7 +62,8 @@ class _HomePageState extends State<HomePage> {
     return BlocBuilder<CalendarBloc, CalendarState>(builder: (context, state) {
       int meetingCount = 0;
       if (state is MeetingsFetched) {
-        meetingCount = state.meetings.length;
+        meetingCount =
+            state.meetings.fold(0, (count, item) => count + item.countVisit);
       }
       return BottomNavigationBar(
         selectedFontSize: 15,
@@ -87,14 +88,14 @@ class _HomePageState extends State<HomePage> {
             icon: countVisit(meetingCount),
             label: 'Календарь',
           ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.agriculture_outlined),
-            label: 'Клиенты',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Профиль',
-          ),
+          // const BottomNavigationBarItem(
+          //   icon: Icon(Icons.agriculture_outlined),
+          //   label: 'Клиенты',
+          // ),
+          // const BottomNavigationBarItem(
+          //   icon: Icon(Icons.person),
+          //   label: 'Профиль',
+          // ),
         ],
       );
     });

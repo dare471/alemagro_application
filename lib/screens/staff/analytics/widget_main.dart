@@ -2,6 +2,8 @@ import 'package:alemagro_application/blocs/analytics/user_analytics_bloc.dart';
 import 'package:alemagro_application/blocs/analytics/user_analytics_events.dart';
 import 'package:alemagro_application/blocs/analytics/user_analytics_state.dart';
 import 'package:alemagro_application/database/database_helper.dart';
+import 'package:alemagro_application/screens/staff/analytics/IndividualAnalyse/main_page_analyse.dart';
+import 'package:alemagro_application/theme/app_color.dart';
 import 'package:alemagro_application/widgets/metrics/metricItem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,7 +43,7 @@ Widget buildInitialCard(BuildContext parentContext) {
             child: ElevatedButton(
               style: ButtonStyle(
                   backgroundColor:
-                      MaterialStateProperty.all<Color>(Color(0xFF035AA6)),
+                      MaterialStateProperty.all<Color>(AppColors.blueDarkV2),
                   shape: MaterialStateProperty.all<OutlinedBorder?>(
                       RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10)))),
@@ -54,7 +56,13 @@ Widget buildInitialCard(BuildContext parentContext) {
                     Gap(5),
                     Text('Мои показатели по плану')
                   ]),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => MainAnalyse(),
+                  ),
+                );
+              },
             ),
           )
         ]);

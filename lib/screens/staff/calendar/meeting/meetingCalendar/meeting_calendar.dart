@@ -16,7 +16,7 @@ class _MeetingViewCalendarState extends State<MeetingViewCalendar> {
         view: CalendarView.month,
         monthViewSettings: const MonthViewSettings(
           showAgenda: true,
-          numberOfWeeksInView: 6,
+          numberOfWeeksInView: 3,
         ),
       ),
     );

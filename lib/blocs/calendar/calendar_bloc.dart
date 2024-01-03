@@ -19,6 +19,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     // Register event handler for FetchMeetings
     on<FetchMeetings>(_onFetchMeetings);
     on<ToggleCalendarViewEvent>(_onToggleCalendarView);
+    on<FetchMeetingsToday>(_onFetchMeetingsToday);
   }
 
   // Event handler for FetchMeetings
@@ -26,6 +27,18 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
       FetchMeetings event, Emitter<CalendarState> emit) async {
     try {
       List<Meeting> meetings = await fetchMeetingsFromAPI();
+      print(meetings);
+      emit(MeetingsFetched(meetings)); // Emitting the fetched meetings state
+    } catch (e) {
+      emit(MeetingsFetchFailed(e.toString())); // Emitting the error state
+    }
+  }
+
+  // Event handler for FetchMeetings
+  Future<void> _onFetchMeetingsToday(
+      FetchMeetingsToday event, Emitter<CalendarState> emit) async {
+    try {
+      List<Meeting> meetings = await fetchMeetingsTodayFromAPI();
       print(meetings);
       emit(MeetingsFetched(meetings)); // Emitting the fetched meetings state
     } catch (e) {
@@ -73,7 +86,33 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonResponse = jsonDecode(response.body);
-      print(body);
+      print(response.body);
+      return jsonResponse.map((json) => Meeting.fromJson(json)).toList();
+    } else {
+      // print("Failed to load meetings, status code: ${response.statusCode}");
+      throw Exception(
+          "Failed to load meetings, status code: ${response.statusCode}");
+    }
+  }
+
+  Future<List<Meeting>> fetchMeetingsTodayFromAPI() async {
+    final userProfileData = DatabaseHelper.getUserProfileData();
+    const url = 'https://crm.alemagro.com:8080/api/planned/mobile';
+    final body = jsonEncode({
+      "type": "plannedMeeting",
+      "action": "getMeetingsToday",
+      "userId": userProfileData?['id'] ?? '',
+    });
+
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {"Content-Type": "application/json"},
+      body: body,
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonResponse = jsonDecode(response.body);
+      print(response.body);
       return jsonResponse.map((json) => Meeting.fromJson(json)).toList();
     } else {
       // print("Failed to load meetings, status code: ${response.statusCode}");
