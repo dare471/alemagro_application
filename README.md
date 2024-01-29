@@ -1,16 +1,10 @@
 # alemagro_application
 
-A new Flutter project.
+A new project for SalesManager.
 
 ## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Разработка приложения как для Менеджера так и для Клиента.
+Разработка идет UI material KIT, Поэтому делаю единый код под Android & IOS.
+Логику пользователя разобью по типу авторизации, если Клиент то экраны Client, если сотрудник компании то staff.
+Разрешения на файлы, геопозицию, камеру, галлерею устройства. Минимум кастомных решения больше библиотек.
+Добавлю local Storage hive, для работы с данными в оффлайн режиме. Планирую перевести все в mongoDB для синхронизации при доступности в сети. 
