@@ -1,15 +1,22 @@
 import 'package:alemagro_application/blocs/calendar/calendar_bloc.dart';
 import 'package:alemagro_application/blocs/pincode/pin_code_bloc.dart';
 import 'package:alemagro_application/screens/staff/calendar/main_list.dart';
+import 'package:alemagro_application/screens/staff/calendar/second_list.dart';
 import 'package:alemagro_application/screens/staff/mainPage/main_info_user.dart';
-import 'package:alemagro_application/screens/staff/myClient/clientProfile/client_profile.dart';
+import 'package:alemagro_application/screens/staff/client/clientProfile/client_profile.dart';
+import 'package:alemagro_application/screens/staff/profile/my_cabinet.dart';
+import 'package:alemagro_application/screens/staff/search/search.dart';
+import 'package:alemagro_application/screens/staff/visitClient/visitClientForm.dart';
 import 'package:alemagro_application/widgets/floatingActionButton/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:alemagro_application/theme/app_color.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../blocs/search/search_bloc.dart';
+
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -18,6 +25,7 @@ class _HomePageState extends State<HomePage> {
   List<String> pageTitles = [
     "Главная",
     "Календарь",
+    "Мои клиенты"
     // "Клиенты",
     // "Мой профиль",
   ]; // заголовки для каждой страницы
@@ -25,6 +33,7 @@ class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
   late final PageController _pageController;
   PinBloc pinBloc = PinBloc();
+  final GlobalKey<FormState> eventFormKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -36,6 +45,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _pageController = PageController();
+    context.read<CalendarBloc>().add(FetchMeetingsToday());
   }
 
   void _onPageChanged(int index) {
@@ -50,20 +60,32 @@ class _HomePageState extends State<HomePage> {
 
   List<Widget> _buildPageChildren() {
     return [
-      const MainInfoUser(),
-      MainListVisit(),
-      ClientProfile(),
-      TestScreen(),
-      TestScreen(),
+      MainInfoUser(),
+      SecondList(),
+      // MainListVisit(
+      //   page: 1,
+      // ),
+      BlocProvider<ClientSearchBloc>(
+        create: (context) => ClientSearchBloc(),
+        child: MySearchWidget(),
+      ),
+      MyCabinet()
     ];
   }
 
-  BlocBuilder<CalendarBloc, CalendarState> _buildBottomNavigationBar() {
-    return BlocBuilder<CalendarBloc, CalendarState>(builder: (context, state) {
+  Widget _buildBottomNavigationBar() {
+    return BlocListener<CalendarBloc, CalendarState>(
+        listener: (context, state) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Встречи обновлены!')));
+      // Добавьте здесь логику, если вам нужно реагировать на определенные изменения состояния
+    }, child:
+            BlocBuilder<CalendarBloc, CalendarState>(builder: (context, state) {
+      CalendarBloc().add(FetchMeetingsToday());
       int meetingCount = 0;
       if (state is MeetingsFetched) {
-        meetingCount =
-            state.meetings.fold(0, (count, item) => count + item.countVisit);
+        meetingCount = state.countMeetings
+            .fold(0, (count, item) => count + item.countVisit);
       }
       return BottomNavigationBar(
         selectedFontSize: 15,
@@ -86,7 +108,11 @@ class _HomePageState extends State<HomePage> {
           ),
           BottomNavigationBarItem(
             icon: countVisit(meetingCount),
-            label: 'Календарь',
+            label: 'Менеджер встреч',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.agriculture),
+            label: 'Мои клиенты',
           ),
           // const BottomNavigationBarItem(
           //   icon: Icon(Icons.agriculture_outlined),
@@ -98,7 +124,7 @@ class _HomePageState extends State<HomePage> {
           // ),
         ],
       );
-    });
+    }));
   }
 
   Stack countVisit(int count) {
@@ -139,18 +165,40 @@ class _HomePageState extends State<HomePage> {
       value: SystemUiOverlayStyle.dark, // Or dark
       child: Scaffold(
         appBar: AppBar(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-          elevation: 4,
-          backgroundColor: AppColors.blueDark,
-          title: Text(pageTitles[_currentIndex]),
-        ),
+            actions: [
+              if (_currentIndex == 1)
+                IconButton(
+                    icon: const Icon(
+                      Icons.add_alert_outlined,
+                      size: 30,
+                    ),
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                side: BorderSide(color: Colors.white),
+                                borderRadius: BorderRadius.circular(30.0),
+                              ),
+                              title: const Text('Добавить Встречу'),
+                              content: EventForm(eventBloc: '')));
+                    })
+              else
+                SizedBox.shrink(),
+            ],
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            elevation: 4,
+            backgroundColor: AppColors.blueDark,
+            title: Text(pageTitles[_currentIndex])),
         body: PageView(
           physics: const NeverScrollableScrollPhysics(),
           controller: _pageController,
           onPageChanged: _onPageChanged,
           children: _buildPageChildren(),
         ),
-        floatingActionButton: buildFloatingActionButton(context, _currentIndex),
+
+        // floatingActionButton: buildFloatingActionButton(context, _currentIndex),
         bottomNavigationBar: _buildBottomNavigationBar(),
       ),
     );

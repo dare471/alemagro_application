@@ -1,49 +1,108 @@
-class Meeting {
-  final int countVisit;
-  final int id;
-  final int clientId;
-  final int statusVisit;
-  final DateTime date;
-  // final DateTime dateStart;
-  // final DateTime dateFinish;
-  final String targetDescription;
-  final String clientName;
-  final String clientAddress;
-  final String? typeVisitName;
-  // Добавьте другие поля, которые вам нужны
+class Visit {
+  int countVisit;
+  int id;
+  int clientId;
+  String clientName;
+  String? clientAddress;
+  int statusVisit;
+  int source;
+  int dateVisitStamp;
+  String dateVisit;
+  String dateToStart;
+  String dateToFinish;
+  String targetDescription;
+  String placeDescription;
+  String? notes;
+  bool isAllDay;
+  ClientProperties properties;
 
-  Meeting({
+  Visit({
     required this.countVisit,
     required this.id,
     required this.clientId,
-    required this.statusVisit,
-    required this.date,
-    // required this.dateStart,
-    // required this.dateFinish,
-    required this.targetDescription,
     required this.clientName,
     required this.clientAddress,
-    this.typeVisitName,
-    // Инициализация других полей
+    required this.statusVisit,
+    required this.source,
+    required this.dateVisitStamp,
+    required this.dateVisit,
+    required this.dateToStart,
+    required this.dateToFinish,
+    required this.targetDescription,
+    required this.placeDescription,
+    this.notes,
+    required this.isAllDay,
+    required this.properties,
   });
 
-  // Метод для создания объекта Meeting из JSON
-  factory Meeting.fromJson(Map<String, dynamic> json) {
-    return Meeting(
+  factory Visit.fromJson(Map<String, dynamic> json) {
+    return Visit(
       countVisit: json['countVisit'],
       id: json['id'],
       clientId: json['clientId'],
+      clientName: json['clientName'],
+      clientAddress: json['clientAddress'],
       statusVisit: json['statusVisit'],
-      date: DateTime.parse(json['dateVisit']),
-      //  dateStart: json['properties']['startVisit'] != null ? DateTime.fromMillisecondsSinceEpoch(json['properties']['startVisit'] *1000) // If timestamp is in seconds : DateTime.now(), // Default or error handling
-      //  dateFinish: json['properties']['finishVisit'] != null ? DateTime.fromMillisecondsSinceEpoch(json['properties']['finishVisit'] * 1000)   : DateTime.now(),
+      source: json['source'],
+      dateVisitStamp: json['dateVisitStamp'],
+      dateVisit: json['dateVisit'],
+      dateToStart: json['dateToStart'],
+      dateToFinish: json['dateToFinish'],
       targetDescription: json['targetDescription'],
-      clientName: json['properties']['clientName'],
-      clientAddress: json['properties']
-          ['clientAddres'], // Ensure this key matches your JSON key
-      typeVisitName: json['properties']
-          ['typeVisitName'], // Handle nulls as per your requirement
-      // ... other fields
+      placeDescription: json['placeDescription'],
+      notes: json['notes'],
+      isAllDay: json['isAllDay'],
+      properties: ClientProperties.fromJson(json['properties']),
+    );
+  }
+}
+
+class ClientProperties {
+  String clientName;
+  String? clientAddress;
+  String clientIin;
+  List<ClientOrder> clientOrder;
+
+  ClientProperties({
+    required this.clientName,
+    required this.clientAddress,
+    required this.clientIin,
+    required this.clientOrder,
+  });
+
+  factory ClientProperties.fromJson(Map<String, dynamic> json) {
+    var orderList = json['clientOrder'] as List;
+    List<ClientOrder> clientOrderList =
+        orderList.map((i) => ClientOrder.fromJson(i)).toList();
+
+    return ClientProperties(
+      clientName: json['clientName'],
+      clientAddress: json['clientAddres'],
+      clientIin: json['clientIin'],
+      clientOrder: clientOrderList,
+    );
+  }
+}
+
+class ClientOrder {
+  String productName;
+  int count;
+  String provider;
+  int totalCostWithVat;
+
+  ClientOrder({
+    required this.productName,
+    required this.count,
+    required this.provider,
+    required this.totalCostWithVat,
+  });
+
+  factory ClientOrder.fromJson(Map<String, dynamic> json) {
+    return ClientOrder(
+      productName: json['productName'],
+      count: json['count'],
+      provider: json['provider'],
+      totalCostWithVat: json['total_cost_with_vat'],
     );
   }
 }

@@ -218,13 +218,18 @@ class _PinCodeScreenState extends State<PinCodeScreen> {
         barrierDismissible: false,
         builder: (BuildContext context) {
           return const Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(9),
+              ),
+            ),
             child: Padding(
               padding: EdgeInsets.all(20.0),
-              child: Row(
+              child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   CircularProgressIndicator(),
-                  SizedBox(width: 20),
+                  Gap(10),
                   Text("Пожалуйста, подождите..."),
                 ],
               ),
