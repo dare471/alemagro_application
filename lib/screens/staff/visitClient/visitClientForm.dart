@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:alemagro_application/repositories/user_repository.dart';
 import 'package:alemagro_application/theme/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -38,7 +39,7 @@ class _EventFormState extends State<EventForm> {
 
   Future<List<Client>> fetchClients(String clientName) async {
     final response = await http.post(
-      Uri.parse('https://crm.alemagro.com:8080/api/planned/mobile'),
+      Uri.parse(API.planned),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -117,7 +118,7 @@ class _EventFormState extends State<EventForm> {
         combineDateTime(_selectedDate, _selectedFinishTime);
 
     final response = await http.post(
-      Uri.parse('https://crm.alemagro.com:8080/api/planned/mobile'),
+      Uri.parse(API.planned),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

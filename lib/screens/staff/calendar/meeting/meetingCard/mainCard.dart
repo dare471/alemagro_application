@@ -1,8 +1,11 @@
+import 'package:alemagro_application/blocs/commentary/commentary_bloc.dart';
 import 'package:alemagro_application/theme/app_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../../../../models/calendar_visit.dart';
+import '../../../../../models/commentary/main_model.dart';
 
 enum TabItem {
   analytics,
@@ -31,10 +34,38 @@ class _MainCardWidgetState extends State<MainCardWidget>
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
     _getLocation();
+    _tabController.addListener(_handleTabSelection);
+  }
+
+  void _handleTabSelection() {
+    if (_tabController.indexIsChanging) {
+      if (_tabController.index == 0) {
+        print(_tabController.index);
+        BlocProvider.of<CommentaryBloc>(context).add(FetchData());
+        // Здесь вы вызываете ваш Bloc
+      }
+      if (_tabController.index == 1) {
+        print(_tabController.index);
+        BlocProvider.of<CommentaryBloc>(context).add(FetchData());
+        // Здесь вы вызываете ваш Bloc
+      }
+      if (_tabController.index == 2) {
+        print(_tabController.index);
+        BlocProvider.of<CommentaryBloc>(context).add(FetchData());
+        // Здесь вы вызываете ваш Bloc
+      }
+      // Проверьте, соответствует ли индекс вкладки индексу вкладки Commentary
+      if (_tabController.index == 3) {
+        print(_tabController.index);
+        BlocProvider.of<CommentaryBloc>(context).add(FetchData());
+        // Здесь вы вызываете ваш Bloc
+      }
+    }
   }
 
   @override
   void dispose() {
+    _tabController.removeListener(_handleTabSelection);
     _tabController.dispose();
     super.dispose();
   }
@@ -394,15 +425,14 @@ class ListContentView extends StatelessWidget {
   Widget build(BuildContext context) {
     switch (tabItem) {
       case TabItem.files:
-        return PhotoGallery(
-            tabItem.name, clientId); // Пример для вкладки "Файлы"
+        return NoteList(tabItem.name, clientId); // Пример для вкладки "Файлы"
       case TabItem.comments:
         return NoteList(
             tabItem.name, clientId); // Пример для вкладки "Комментарии"
       case TabItem.analytics:
-        return AudioNote(tabItem.name, clientId);
+        return NoteList(tabItem.name, clientId);
       case TabItem.contacts:
-        return AudioNote(
+        return NoteList(
             tabItem.name, clientId); // Пример для вкладки "Аналитика"
       default:
         return Container();
@@ -410,58 +440,62 @@ class ListContentView extends StatelessWidget {
   }
 }
 
-Widget AudioNote(String id, int clientId) {
-  return Container(
-    decoration: BoxDecoration(
-        border: Border.all(color: AppColors.blueDarkV2),
-        borderRadius: BorderRadius.all(Radius.circular(10))),
-    padding: EdgeInsets.all(10),
-    child: Column(
-      children: [Text(id.toString()), Text(clientId.toString())],
-    ),
-  );
-}
-
-Widget ContactPerson(String id, int clientId) {
-  return Container(
-    decoration: BoxDecoration(
-        border: Border.all(color: AppColors.blueDarkV2),
-        borderRadius: BorderRadius.all(Radius.circular(10))),
-    padding: EdgeInsets.all(10),
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [Text(id.toString()), Text(clientId.toString())],
-    ),
-  );
-}
-
-Widget PhotoGallery(String id, int clientId) {
-  return Container(
-    decoration: BoxDecoration(
-        border: Border.all(color: AppColors.blueDarkV2),
-        borderRadius: BorderRadius.all(Radius.circular(10))),
-    padding: EdgeInsets.all(10),
-    child: Column(
-      children: [Text(id.toString()), Text(clientId.toString())],
-    ),
-  );
-}
-
 Widget NoteList(String id, int clientId) {
-  return Container(
-    decoration: BoxDecoration(
-        border: Border.all(color: AppColors.blueDarkV2),
-        borderRadius: BorderRadius.all(Radius.circular(10))),
-    padding: EdgeInsets.all(10),
-    child: Column(
-      children: [
-        Text(
-          id.toString(),
+  return BlocBuilder<CommentaryBloc, CommentaryState>(
+    builder: (context, state) {
+      if (state is CommentaryInitial) {
+        return CircularProgressIndicator();
+      } else if (state is CommentaryFetched) {
+        // Отобразите данные
+        return BuildList(state.data);
+      } else if (state is CommentaryFetchedFailed) {
+        // Отобразите сообщение об ошибке
+        return Text(state.error);
+      } else {
+        return Text('null');
+      }
+      // Другие состояния...
+    },
+  );
+// Container(
+//     decoration: BoxDecoration(
+//         border: Border.all(color: AppColors.blueDarkV2),
+//         borderRadius: BorderRadius.all(Radius.circular(10))),
+//     padding: EdgeInsets.all(10),
+//     child: Column(
+//       children: [
+//         Text('sss'),
+//         Text(
+//           clientId.toString(),
+//         ),
+//       ],
+//     ),
+//   );
+}
+
+Widget BuildList(List<CommentaryNote> commentaryList) {
+  return ListView.builder(
+    itemCount: commentaryList.length,
+    itemBuilder: (context, index) {
+      CommentaryNote item = commentaryList[index];
+      return Card(
+        margin: EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              item.description,
+              style: TextStyle(fontSize: 15, color: Colors.black),
+            ),
+            Text(
+              item.createDate,
+              style: TextStyle(fontSize: 15, color: Colors.black54),
+            ),
+          ],
         ),
-        Text(
-          clientId.toString(),
-        ),
-      ],
-    ),
+        // И другие элементы UI, которые вы хотите использовать
+      );
+    },
   );
 }

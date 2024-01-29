@@ -9,7 +9,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:equatable/equatable.dart';
-
+import 'package:alemagro_application/repositories/user_repository.dart';
 import 'package:hive/hive.dart';
 import 'package:alemagro_application/models/visit.dart'; // Импортируйте вашу модель данных
 
@@ -91,7 +91,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
   Future<List<Visit>> fetchMeetingsFromAPI() async {
     final userProfileData = DatabaseHelper.getUserProfileData();
-    const url = 'https://crm.alemagro.com:8080/api/planned/mobile';
+
     final body = jsonEncode({
       "type": "plannedMeeting",
       "action": "getMeetings",
@@ -99,7 +99,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     });
 
     final response = await http.post(
-      Uri.parse(url),
+      Uri.parse(API.planned),
       headers: {"Content-Type": "application/json"},
       body: body,
     );
@@ -117,7 +117,6 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
   Future<List<Visit>> fetchMeetingsTodayFromAPI() async {
     final userProfileData = DatabaseHelper.getUserProfileData();
-    const url = 'https://crm.alemagro.com:8080/api/planned/mobile';
     final body = jsonEncode({
       "type": "plannedMeeting",
       "action": "getMeetingsToday",
@@ -125,7 +124,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     });
 
     final response = await http.post(
-      Uri.parse(url),
+      Uri.parse(API.planned),
       headers: {"Content-Type": "application/json"},
       body: body,
     );
@@ -144,7 +143,6 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
 
   Future<List<CountMeeting>> fetchMeetingsTodayCountFromAPI() async {
     final userProfileData = DatabaseHelper.getUserProfileData();
-    const url = 'https://crm.alemagro.com:8080/api/planned/mobile';
     final body = jsonEncode({
       "type": "plannedMeeting",
       "action": "countClientToday",
@@ -152,7 +150,7 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
     });
 
     final response = await http.post(
-      Uri.parse(url),
+      Uri.parse(API.planned),
       headers: {"Content-Type": "application/json"},
       body: body,
     );

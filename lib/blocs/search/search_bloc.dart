@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:alemagro_application/blocs/search/search_event.dart';
 import 'package:alemagro_application/blocs/search/search_state.dart';
 import 'package:alemagro_application/models/search_client.dart';
+import 'package:alemagro_application/repositories/user_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 
@@ -67,7 +68,7 @@ class ClientSearchBloc extends Bloc<ClientSearchEvent, ClientSearchState> {
     }
 
     try {
-      var url = Uri.parse('https://crm.alemagro.com:8080/api/planned/mobile');
+      var url = Uri.parse(API.planned);
       var response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},

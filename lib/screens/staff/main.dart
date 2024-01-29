@@ -1,23 +1,24 @@
 import 'package:alemagro_application/blocs/calendar/calendar_bloc.dart';
 import 'package:alemagro_application/blocs/pincode/pin_code_bloc.dart';
-import 'package:alemagro_application/screens/staff/calendar/main_list.dart';
+
 import 'package:alemagro_application/screens/staff/calendar/second_list.dart';
+import 'package:alemagro_application/screens/staff/favorites/mainPage.dart';
 import 'package:alemagro_application/screens/staff/mainPage/main_info_user.dart';
-import 'package:alemagro_application/screens/staff/client/clientProfile/client_profile.dart';
 import 'package:alemagro_application/screens/staff/profile/my_cabinet.dart';
 import 'package:alemagro_application/screens/staff/search/search.dart';
 import 'package:alemagro_application/screens/staff/visitClient/visitClientForm.dart';
-import 'package:alemagro_application/widgets/floatingActionButton/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:alemagro_application/theme/app_color.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 
 import '../../blocs/search/search_bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
   @override
+  // ignore: library_private_types_in_public_api
   _HomePageState createState() => _HomePageState();
 }
 
@@ -26,8 +27,6 @@ class _HomePageState extends State<HomePage> {
     "Главная",
     "Календарь",
     "Мои клиенты"
-    // "Клиенты",
-    // "Мой профиль",
   ]; // заголовки для каждой страницы
 
   int _currentIndex = 0;
@@ -60,11 +59,8 @@ class _HomePageState extends State<HomePage> {
 
   List<Widget> _buildPageChildren() {
     return [
-      MainInfoUser(),
+      const MainInfoUser(),
       SecondList(),
-      // MainListVisit(
-      //   page: 1,
-      // ),
       BlocProvider<ClientSearchBloc>(
         create: (context) => ClientSearchBloc(),
         child: MySearchWidget(),
@@ -77,7 +73,7 @@ class _HomePageState extends State<HomePage> {
     return BlocListener<CalendarBloc, CalendarState>(
         listener: (context, state) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Встречи обновлены!')));
+          .showSnackBar(const SnackBar(content: Text('Встречи обновлены!')));
       // Добавьте здесь логику, если вам нужно реагировать на определенные изменения состояния
     }, child:
             BlocBuilder<CalendarBloc, CalendarState>(builder: (context, state) {
@@ -110,18 +106,10 @@ class _HomePageState extends State<HomePage> {
             icon: countVisit(meetingCount),
             label: 'Менеджер встреч',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.agriculture),
             label: 'Мои клиенты',
           ),
-          // const BottomNavigationBarItem(
-          //   icon: Icon(Icons.agriculture_outlined),
-          //   label: 'Клиенты',
-          // ),
-          // const BottomNavigationBarItem(
-          //   icon: Icon(Icons.person),
-          //   label: 'Профиль',
-          // ),
         ],
       );
     }));
@@ -166,6 +154,21 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         appBar: AppBar(
             actions: [
+              if (_currentIndex == 0)
+                IconButton(
+                  highlightColor: AppColors.blueLightV,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const FavoritesClient()),
+                    );
+                  },
+                  icon: const Icon(
+                    Icons.auto_graph_outlined,
+                    size: 30,
+                  ),
+                ),
               if (_currentIndex == 1)
                 IconButton(
                     icon: const Icon(
@@ -184,7 +187,8 @@ class _HomePageState extends State<HomePage> {
                               content: EventForm(eventBloc: '')));
                     })
               else
-                SizedBox.shrink(),
+                Gap(5)
+              // SizedBox.shrink(),
             ],
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
@@ -201,16 +205,6 @@ class _HomePageState extends State<HomePage> {
         // floatingActionButton: buildFloatingActionButton(context, _currentIndex),
         bottomNavigationBar: _buildBottomNavigationBar(),
       ),
-    );
-  }
-}
-
-class TestScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // ignore: avoid_unnecessary_containers
-    return Container(
-      child: const Text('ss'),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:alemagro_application/blocs/calendar/calendar_bloc.dart';
+import 'package:alemagro_application/blocs/commentary/commentary_bloc.dart';
 import 'package:alemagro_application/models/calendar_visit.dart';
 import 'package:alemagro_application/screens/staff/calendar/meeting/meetingCalendar/meeting_calendar.dart';
 import 'package:alemagro_application/theme/app_color.dart';
@@ -222,8 +223,13 @@ Widget buildMeetingList(BuildContext context, List<Visit> meetings) {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  MainCardWidget(id: appointmentId, meetings: meetings)),
+            builder: (context) => BlocProvider<CommentaryBloc>(
+              create: (context) => CommentaryBloc(
+                commentaryRepository: CommentaryRepository(),
+              ),
+              child: MainCardWidget(id: appointmentId, meetings: meetings),
+            ),
+          ),
         );
       }
     },
