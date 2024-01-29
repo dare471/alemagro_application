@@ -4,7 +4,7 @@ import 'package:hive/hive.dart';
 part 'visit.g.dart';
 
 @HiveType(typeId: 0)
-class Visit extends HiveObject {
+class VisitLocal extends HiveObject {
   @HiveField(0)
   int? id;
 

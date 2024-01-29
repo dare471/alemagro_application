@@ -6,17 +6,17 @@ part of 'visit.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class VisitAdapter extends TypeAdapter<Visit> {
+class VisitAdapter extends TypeAdapter<VisitLocal> {
   @override
   final int typeId = 0;
 
   @override
-  Visit read(BinaryReader reader) {
+  VisitLocal read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Visit()
+    return VisitLocal()
       ..id = fields[0] as int?
       ..clientId = fields[1] as int?
       ..statusVisit = fields[2] as int?
@@ -28,7 +28,7 @@ class VisitAdapter extends TypeAdapter<Visit> {
   }
 
   @override
-  void write(BinaryWriter writer, Visit obj) {
+  void write(BinaryWriter writer, VisitLocal obj) {
     writer
       ..writeByte(8)
       ..writeByte(0)

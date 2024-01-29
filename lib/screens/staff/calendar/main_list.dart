@@ -5,6 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'meeting/meetingList/meeting_list.dart';
 
 class MainListVisit extends StatefulWidget {
+  final int page;
+  const MainListVisit({super.key, required this.page});
+  @override
+  // ignore: library_private_types_in_public_api
   _MainListVisitState createState() => _MainListVisitState();
 }
 
@@ -14,13 +18,10 @@ class _MainListVisitState extends State<MainListVisit> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        // Container(
-        //     padding: EdgeInsets.all(1),
-        //     child: controllerListMeeting(BuildContext, context)),
         Expanded(
             child: BlocProvider(
           create: (context) => CalendarBloc(),
-          child: buildCalendar(context),
+          child: buildCalendar(context, widget.page),
         )),
       ],
     );

@@ -6,6 +6,12 @@ abstract class CalendarEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class CalendarPageChanged extends CalendarEvent {
+  final int pageIndex;
+
+  CalendarPageChanged(this.pageIndex);
+}
+
 class FetchMeetings extends CalendarEvent {}
 
 class FetchMeetingsToday extends CalendarEvent {}

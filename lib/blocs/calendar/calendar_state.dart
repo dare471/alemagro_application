@@ -9,12 +9,18 @@ abstract class CalendarState extends Equatable {
 class CalendarInitial extends CalendarState {}
 
 class MeetingsFetched extends CalendarState {
-  final List<Meeting> meetings;
-
-  MeetingsFetched(this.meetings);
+  final List<Visit> meetings;
+  final List<CountMeeting> countMeetings;
+  MeetingsFetched(this.meetings, this.countMeetings);
 
   @override
   List<Object> get props => [meetings];
+}
+
+class CalendarPageLoaded extends CalendarState {
+  final int currentPage;
+
+  CalendarPageLoaded(this.currentPage);
 }
 
 class MeetingsFetchFailed extends CalendarState {

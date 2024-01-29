@@ -2,12 +2,9 @@ import 'package:alemagro_application/blocs/analytics/user_analytics_bloc.dart';
 import 'package:alemagro_application/blocs/analytics/user_analytics_events.dart';
 import 'package:alemagro_application/blocs/analytics/user_analytics_state.dart';
 import 'package:alemagro_application/database/database_helper.dart';
-import 'package:alemagro_application/screens/staff/analytics/IndividualAnalyse/main_page_analyse.dart';
-import 'package:alemagro_application/theme/app_color.dart';
 import 'package:alemagro_application/widgets/metrics/metricItem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gap/gap.dart';
 
 Widget buildInitialCard(BuildContext parentContext) {
   final userProfileData = DatabaseHelper.getUserProfileData();
@@ -33,41 +30,14 @@ Widget buildInitialCard(BuildContext parentContext) {
                   value: 'Реализация',
                   blocId: 2),
               MetricSItem(
-                  title: state.data.executionPlan.toString() + '%',
+                  title: '${state.data.executionPlan}%',
                   value: "Выполнено",
                   blocId: 3)
             ],
           ),
-          Container(
-            padding: const EdgeInsets.all(5),
-            child: ElevatedButton(
-              style: ButtonStyle(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(AppColors.blueDarkV2),
-                  shape: MaterialStateProperty.all<OutlinedBorder?>(
-                      RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)))),
-              child: const Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Icon(Icons.analytics),
-                    Gap(5),
-                    Text('Мои показатели по плану')
-                  ]),
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => MainAnalyse(),
-                  ),
-                );
-              },
-            ),
-          )
         ]);
       } else if (state is ErrorState) {
-        return Text("Ваши данные по показателям еще не сформированны.");
+        return const Text("Ваши данные по показателям еще не сформированны.");
         // return Text('Ошибка: ${state.message}');
       }
       return const CircularProgressIndicator(); // Начальное состояние или необработанное состояние

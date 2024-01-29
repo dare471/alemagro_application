@@ -247,10 +247,36 @@ class _SplashScreenState extends State<SplashScreen> {
   Future<void> _checkPinAndRedirect() async {
     bool hasPin = await hasPinStored();
     if (hasPin) {
+      // ignore: use_build_context_synchronously
       Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => PinCodeScreen()),
-      );
+          context,
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) =>
+                PinCodeScreen(), // Замените NewScreen() на экран, на который вы хотите перейти
+            transitionDuration: const Duration(
+                seconds: 1), // Установите желаемую продолжительность анимации
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              var begin = const Offset(
+                  0.0, 10.0); // Начальная точка анимации (с правой стороны)
+              var end = Offset.zero; // Конечная точка анимации (центр экрана)
+              var curve = Curves.ease; // Тип кривой анимации
+
+              var tween =
+                  Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              var offsetAnimation = animation.drive(tween);
+
+              return SlideTransition(
+                position: offsetAnimation,
+                child: child,
+              );
+            },
+          ));
+
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => PinCodeScreen()),
+      // );
     } else {
       Navigator.pushReplacement(
         context,
@@ -261,7 +287,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body:
           Center(child: CircularProgressIndicator()), // Show a loading spinner
     );
@@ -269,7 +295,7 @@ class _SplashScreenState extends State<SplashScreen> {
 }
 
 Future<bool> hasPinStored() async {
-  final _storage = FlutterSecureStorage();
+  final _storage = const FlutterSecureStorage();
   String? pin = await _storage.read(key: 'pincode');
   return pin != null && pin.isNotEmpty;
 }

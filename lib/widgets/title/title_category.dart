@@ -25,7 +25,6 @@ class _TitleCategoryState extends State<TitleCategory> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Divider(height: widget.height, thickness: widget.thicknes),
         Gap(widget.gap),
         Text(
           widget.text,
@@ -35,7 +34,7 @@ class _TitleCategoryState extends State<TitleCategory> {
           ),
           textAlign: TextAlign.start,
         ),
-        Gap(widget.gap)
+        Gap(widget.gap),
       ],
     );
   }

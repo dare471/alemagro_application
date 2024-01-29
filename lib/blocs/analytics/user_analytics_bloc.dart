@@ -5,6 +5,7 @@ import 'package:alemagro_application/database/database_helper.dart';
 import 'package:alemagro_application/models/UserAnalyticDashboard.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
+import 'package:alemagro_application/repositories/user_repository.dart';
 
 // blocs/user_analytics_bloc.dart
 class UserAnalyticBloc extends Bloc<UserAnalyticsEvent, UserAnalyticState> {
@@ -31,10 +32,9 @@ class UserAnalyticBloc extends Bloc<UserAnalyticsEvent, UserAnalyticState> {
 }
 
 Future<List<UserStats>> _fetchUserData(int userId) async {
-  final String baseUrl =
-      'https://crm.alemagro.com:8080'; // Замените на ваш базовый URL API
+  // Замените на ваш базовый URL API
   final response = await http.post(
-    Uri.parse('$baseUrl/api/mobile/client/dashboard'),
+    Uri.parse(API.dashboard),
     body: jsonEncode({
       "type": "planFactUserGroup",
       "userId": userId,

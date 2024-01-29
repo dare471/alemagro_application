@@ -1,6 +1,14 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+class API {
+  static const String baseUrl = "https://crm.alemagro.com:8080/api";
+  static const String auth = '$baseUrl/auth/login';
+  static const String planned = '$baseUrl/planned/mobile';
+  static const String comment = '$baseUrl/comment';
+  static const String dashboard = '$baseUrl/mobile/client/dashboard';
+}
+
 class UserRepository {
   final String baseUrl;
 

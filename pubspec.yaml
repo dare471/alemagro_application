@@ -52,6 +52,10 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   syncfusion_flutter_charts: ^23.1.44
+  geolocator: ^10.1.0
+  flutter_contacts: ^1.1.7+1
+  contacts_service: ^0.6.3
+  permission_handler: ^11.0.1
 
 dev_dependencies:
   flutter_test:
