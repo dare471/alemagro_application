@@ -9,7 +9,3 @@ abstract class CommentaryEvent extends Equatable {
 class FetchData extends CommentaryEvent {}
 
 class FetchAnalyse extends CommentaryEvent {}
-
-class FetchMeetingsToday extends CommentaryEvent {}
-
-class ToggleCalendarViewEvent extends CommentaryEvent {}

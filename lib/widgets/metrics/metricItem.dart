@@ -27,11 +27,13 @@ class MetricSItem extends StatelessWidget {
                   : (blocId == 2
                       ? Color(0xFFF2C879).withOpacity(0.9)
                       : Color(0xFF035AA6).withOpacity(0.9)),
-              borderRadius: BorderRadius.circular(30)),
+              borderRadius: BorderRadius.circular(40)),
           child: Center(
             child: Text(
               title,
               style: TextStyle(
+                overflow:
+                    TextOverflow.fade, // Truncate with ellipsis if too long
                 fontSize: fontSize,
                 fontWeight: FontWeight.bold,
                 color: Colors.white,

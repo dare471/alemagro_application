@@ -2,7 +2,7 @@ import 'package:alemagro_application/blocs/calendar/calendar_bloc.dart';
 import 'package:alemagro_application/blocs/pincode/pin_code_bloc.dart';
 
 import 'package:alemagro_application/screens/staff/calendar/second_list.dart';
-import 'package:alemagro_application/screens/staff/favorites/mainPage.dart';
+import 'package:alemagro_application/screens/staff/favorites/favorites.dart';
 import 'package:alemagro_application/screens/staff/mainPage/main_info_user.dart';
 import 'package:alemagro_application/screens/staff/profile/my_cabinet.dart';
 import 'package:alemagro_application/screens/staff/search/search.dart';
@@ -157,13 +157,7 @@ class _HomePageState extends State<HomePage> {
               if (_currentIndex == 0)
                 IconButton(
                   highlightColor: AppColors.blueLightV,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const FavoritesClient()),
-                    );
-                  },
+                  onPressed: () {},
                   icon: const Icon(
                     Icons.auto_graph_outlined,
                     size: 30,

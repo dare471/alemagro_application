@@ -1,5 +1,6 @@
 import 'package:alemagro_application/blocs/calendar/calendar_bloc.dart';
 import 'package:alemagro_application/blocs/commentary/commentary_bloc.dart';
+import 'package:alemagro_application/blocs/contacts/contacts_bloc.dart';
 import 'package:alemagro_application/models/calendar_visit.dart';
 import 'package:alemagro_application/screens/staff/calendar/meeting/meetingCalendar/meeting_calendar.dart';
 import 'package:alemagro_application/theme/app_color.dart';
@@ -175,8 +176,25 @@ Widget buildSpis(BuildContext context, meetings) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => MainCardWidget(
-                                    id: meeting.id, meetings: meetings)),
+                              builder: (context) => MultiBlocProvider(
+                                providers: [
+                                  BlocProvider<CommentaryBloc>(
+                                    create: (context) => CommentaryBloc(
+                                      commentaryRepository:
+                                          CommentaryRepository(),
+                                    ),
+                                  ),
+                                  BlocProvider<ContactBloc>(
+                                    create: (context) => ContactBloc(
+                                      contactRepository: ContactRepository(),
+                                    ),
+                                  ),
+                                  // Добавьте здесь другие BlocProvider'ы по мере необходимости
+                                ],
+                                child: MainCardWidget(
+                                    id: meeting.id, meetings: meetings),
+                              ),
+                            ),
                           );
                         },
                       ),
@@ -223,10 +241,20 @@ Widget buildMeetingList(BuildContext context, List<Visit> meetings) {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => BlocProvider<CommentaryBloc>(
-              create: (context) => CommentaryBloc(
-                commentaryRepository: CommentaryRepository(),
-              ),
+            builder: (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider<CommentaryBloc>(
+                  create: (context) => CommentaryBloc(
+                    commentaryRepository: CommentaryRepository(),
+                  ),
+                ),
+                BlocProvider<ContactBloc>(
+                  create: (context) => ContactBloc(
+                    contactRepository: ContactRepository(),
+                  ),
+                ),
+                // Добавьте здесь другие BlocProvider'ы по мере необходимости
+              ],
               child: MainCardWidget(id: appointmentId, meetings: meetings),
             ),
           ),

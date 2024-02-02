@@ -7,6 +7,8 @@ class API {
   static const String planned = '$baseUrl/planned/mobile';
   static const String comment = '$baseUrl/comment';
   static const String dashboard = '$baseUrl/mobile/client/dashboard';
+  static const String favorites = '$baseUrl/workspace/mobile';
+  static const String managerWorkspace = '$baseUrl/manager/workspace';
 }
 
 class UserRepository {

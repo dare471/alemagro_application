@@ -3,6 +3,7 @@
 import 'dart:ui';
 import 'package:alemagro_application/blocs/analytics/user_analytics_bloc.dart';
 import 'package:alemagro_application/blocs/calendar/calendar_bloc.dart';
+import 'package:alemagro_application/blocs/favoritesClient/favorites_bloc.dart';
 import 'package:alemagro_application/blocs/search/search_bloc.dart';
 import 'package:alemagro_application/database/database_helper.dart';
 import 'package:alemagro_application/models/calendar_visit.dart';
@@ -11,6 +12,7 @@ import 'package:alemagro_application/screens/staff/calendar/main_list.dart';
 import 'package:alemagro_application/screens/staff/calendar/meeting/meetingList/meetingList.dart';
 import 'package:alemagro_application/screens/staff/calendar/second_list.dart';
 import 'package:alemagro_application/screens/staff/client/clientProfile/client_profile.dart';
+import 'package:alemagro_application/screens/staff/favorites/favorites.dart';
 import 'package:alemagro_application/screens/staff/profile/my_cabinet.dart';
 import 'package:alemagro_application/screens/staff/search/search.dart';
 import 'package:alemagro_application/theme/app_color.dart';
@@ -21,6 +23,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
 import 'package:intl/intl.dart';
 
+import '../../../blocs/commentary/commentary_bloc.dart';
+import '../../../blocs/contacts/contacts_bloc.dart';
 import '../calendar/meeting/meetingCard/mainCard.dart';
 import '../visitClient/visitClientForm.dart';
 
@@ -75,6 +79,22 @@ class _MainInfoUserState extends State<MainInfoUser> {
                   BlocProvider(
                     create: (context) => CalendarBloc(),
                     child: buildCalendar(context),
+                  ),
+                  Gap(10),
+                  Divider(
+                    height: 10,
+                    color: Colors.grey,
+                  ),
+                  const TitleCategory(
+                    text: "Избранные клиенты",
+                    fontSize: 19,
+                    height: 10,
+                    thicknes: 1,
+                    gap: 5,
+                  ),
+                  BlocProvider(
+                    create: (context) => FavoritesClientBloc(),
+                    child: buildFavoritesList(context),
                   ),
                 ],
               ),
@@ -169,33 +189,44 @@ Widget buildCalendar(BuildContext context) {
               return Column(
                 children: [
                   buildMeetingList(state.meetings),
-                  // Container(
-                  //   padding: EdgeInsets.all(5),
-                  //   child: ElevatedButton(
-                  //     style: ButtonStyle(
-                  //       fixedSize: MaterialStateProperty.all(
-                  //         const Size(double.maxFinite, double.minPositive),
-                  //       ),
-                  //       backgroundColor: MaterialStateColor.resolveWith(
-                  //         (states) => AppColors.blueDarkV2,
-                  //       ),
-                  //       shape:
-                  //           MaterialStateProperty.all<RoundedRectangleBorder>(
-                  //         RoundedRectangleBorder(
-                  //           borderRadius: BorderRadius.circular(10.0),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //     onPressed: () {},
-                  //     child: const Row(
-                  //       mainAxisAlignment: MainAxisAlignment.center,
-                  //       children: [
-                  //         Icon(Icons.list),
-                  //         Text("Показать весь список"),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
+                  Container(
+                    padding: EdgeInsets.all(10),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        fixedSize: MaterialStateProperty.all(
+                          const Size(double.maxFinite, double.minPositive),
+                        ),
+                        backgroundColor: MaterialStateColor.resolveWith(
+                          (states) => AppColors.blueDarkV2,
+                        ),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) => AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(30.0),
+                                ),
+                                title: const Text('Добавить Встречу'),
+                                content: EventForm(eventBloc: '')));
+                      },
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.add_location_alt_sharp),
+                          Gap(10),
+                          Text("Добавить встречу"),
+                        ],
+                      ),
+                    ),
+                  )
                 ],
               );
             }
@@ -230,8 +261,23 @@ Widget buildMeetingList(List<Visit> meetings) {
           Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) =>
-                    MainCardWidget(id: id, meetings: meetings)),
+              builder: (context) => MultiBlocProvider(
+                providers: [
+                  BlocProvider<CommentaryBloc>(
+                    create: (context) => CommentaryBloc(
+                      commentaryRepository: CommentaryRepository(),
+                    ),
+                  ),
+                  BlocProvider<ContactBloc>(
+                    create: (context) => ContactBloc(
+                      contactRepository: ContactRepository(),
+                    ),
+                  ),
+                  // Добавьте здесь другие BlocProvider'ы по мере необходимости
+                ],
+                child: MainCardWidget(id: id, meetings: meetings),
+              ),
+            ),
           );
           // Handle onTap event
         },
