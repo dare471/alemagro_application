@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
+import '../../../../../blocs/contacts/contacts_bloc.dart';
 import '../../../../../models/calendar_visit.dart';
 import '../../../../../models/commentary/main_model.dart';
+import '../../../../../models/contact/contact.dart';
 
 enum TabItem {
   analytics,
@@ -41,17 +43,17 @@ class _MainCardWidgetState extends State<MainCardWidget>
     if (_tabController.indexIsChanging) {
       if (_tabController.index == 0) {
         print(_tabController.index);
-        BlocProvider.of<CommentaryBloc>(context).add(FetchData());
+
         // Здесь вы вызываете ваш Bloc
       }
       if (_tabController.index == 1) {
         print(_tabController.index);
-        BlocProvider.of<CommentaryBloc>(context).add(FetchData());
+
         // Здесь вы вызываете ваш Bloc
       }
       if (_tabController.index == 2) {
         print(_tabController.index);
-        BlocProvider.of<CommentaryBloc>(context).add(FetchData());
+        BlocProvider.of<ContactBloc>(context).add(GetContact());
         // Здесь вы вызываете ваш Bloc
       }
       // Проверьте, соответствует ли индекс вкладки индексу вкладки Commentary
@@ -432,7 +434,7 @@ class ListContentView extends StatelessWidget {
       case TabItem.analytics:
         return NoteList(tabItem.name, clientId);
       case TabItem.contacts:
-        return NoteList(
+        return ContactList(
             tabItem.name, clientId); // Пример для вкладки "Аналитика"
       default:
         return Container();
@@ -440,11 +442,30 @@ class ListContentView extends StatelessWidget {
   }
 }
 
+Widget ContactList(String id, int clientId) {
+  return BlocBuilder<ContactBloc, ContactState>(
+    builder: (context, state) {
+      if (state is ContactInitial) {
+        print(state);
+        return const Center(child: CircularProgressIndicator());
+      } else if (state is ContactFetched) {
+        // Отобразите данные
+        return BuildContacts(state.data);
+      } else if (state is ContactFetchedFailed) {
+        // Отобразите сообщение об ошибке
+        return Text("Ошибка: ${state.error}");
+      } else {
+        return const Text('Неизвестное состояние');
+      }
+    },
+  );
+}
+
 Widget NoteList(String id, int clientId) {
   return BlocBuilder<CommentaryBloc, CommentaryState>(
     builder: (context, state) {
       if (state is CommentaryInitial) {
-        return CircularProgressIndicator();
+        return Center(child: CircularProgressIndicator());
       } else if (state is CommentaryFetched) {
         // Отобразите данные
         return BuildList(state.data);
@@ -457,44 +478,78 @@ Widget NoteList(String id, int clientId) {
       // Другие состояния...
     },
   );
-// Container(
-//     decoration: BoxDecoration(
-//         border: Border.all(color: AppColors.blueDarkV2),
-//         borderRadius: BorderRadius.all(Radius.circular(10))),
-//     padding: EdgeInsets.all(10),
-//     child: Column(
-//       children: [
-//         Text('sss'),
-//         Text(
-//           clientId.toString(),
-//         ),
-//       ],
-//     ),
-//   );
+}
+
+// ignore: non_constant_identifier_names
+Widget BuildContacts(List<ContactModel> contactsData) {
+  return ListView.separated(
+    itemCount: contactsData.length,
+    separatorBuilder: (context, index) => Divider(color: Colors.grey[400]),
+    itemBuilder: (context, index) {
+      ContactModel item = contactsData[index];
+      return ListTile(
+        leading: const CircleAvatar(
+          // Здесь может быть аватар пользователя или другая иконка
+          child:
+              Icon(Icons.person), // Например, первая буква имени пользователя
+        ),
+        title: Text(
+          item.name,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 5),
+            Text(
+              "Должность: ${item.position}",
+              style: TextStyle(fontSize: 14, color: Colors.black54),
+            ),
+            Text(
+              "Почта: ${item.email}",
+              style: TextStyle(fontSize: 14, color: Colors.black54),
+            ),
+            Text(
+              "Номер: ${item.phNumber}",
+              style: TextStyle(fontSize: 14, color: Colors.black54),
+            ),
+            // Другие элементы, например, категория или дополнительная информация
+          ],
+        ),
+        trailing: Icon(Icons.call, color: Colors.blue), // Иконка комментария
+      );
+    },
+  );
 }
 
 Widget BuildList(List<CommentaryNote> commentaryList) {
-  return ListView.builder(
+  return ListView.separated(
     itemCount: commentaryList.length,
+    separatorBuilder: (context, index) => Divider(color: Colors.grey[400]),
     itemBuilder: (context, index) {
       CommentaryNote item = commentaryList[index];
-      return Card(
-        margin: EdgeInsets.all(10),
-        child: Column(
+      return ListTile(
+        leading: CircleAvatar(
+          // Здесь может быть аватар пользователя или другая иконка
+          child: Text(item.createdBy
+              .toUpperCase()), // Например, первая буква имени пользователя
+        ),
+        title: Text(
+          item.description,
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ),
+        subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            SizedBox(height: 5),
             Text(
-              item.description,
-              style: TextStyle(fontSize: 15, color: Colors.black),
+              "Дата: ${item.createDate}",
+              style: TextStyle(fontSize: 14, color: Colors.black54),
             ),
-            Text(
-              item.createDate,
-              style: TextStyle(fontSize: 15, color: Colors.black54),
-            ),
+            // Другие элементы, например, категория или дополнительная информация
           ],
         ),
-        // И другие элементы UI, которые вы хотите использовать
+        trailing: Icon(Icons.comment, color: Colors.blue), // Иконка комментария
       );
     },
   );

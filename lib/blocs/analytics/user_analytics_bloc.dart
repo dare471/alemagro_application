@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:alemagro_application/blocs/analytics/user_analytics_events.dart';
 import 'package:alemagro_application/blocs/analytics/user_analytics_state.dart';
-import 'package:alemagro_application/database/database_helper.dart';
 import 'package:alemagro_application/models/UserAnalyticDashboard.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;

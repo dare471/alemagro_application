@@ -27,8 +27,8 @@ class LoginPage extends StatelessWidget {
 
     // Пропорции для адаптивного дизайна
     double appBarHeightProportion = 0.4; // 40% от высоты экрана
-    double logoWidthProportion = 0.8; // 80% от ширины экрана
-    double logoHeightProportion = 0.3; // 30% от высоты экрана
+    // 80% от ширины экрана
+    // 30% от высоты экрана
     ///let's goo
     return BlocProvider<AuthBloc>(
       // создаем AuthBloc с UserRepository
@@ -272,12 +272,8 @@ class _SplashScreenState extends State<SplashScreen> {
               );
             },
           ));
-
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => PinCodeScreen()),
-      // );
     } else {
+      // ignore: use_build_context_synchronously
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => LoginPage()),
@@ -295,7 +291,7 @@ class _SplashScreenState extends State<SplashScreen> {
 }
 
 Future<bool> hasPinStored() async {
-  final _storage = const FlutterSecureStorage();
+  const _storage = FlutterSecureStorage();
   String? pin = await _storage.read(key: 'pincode');
   return pin != null && pin.isNotEmpty;
 }

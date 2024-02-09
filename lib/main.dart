@@ -8,13 +8,13 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 
 void main() async {
   // Это необходимо для инициализации асинхронного кода перед запуском приложения.
   WidgetsFlutterBinding.ensureInitialized();
 
-  final userRepository = UserRepository(baseUrl: 'http://10.200.100.17/api');
+  final userRepository =
+      UserRepository(baseUrl: 'https://crm.alemagro.com:8080/api');
 
   // Инициализация Hive
   await Hive.initFlutter();
@@ -40,16 +40,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      localizationsDelegates: [
+      localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations
             .delegate, // Include this for Cupertino localizations
       ],
-      supportedLocales: [
-        const Locale('en'), // English
-        const Locale('ru'), // Russian
-        // Add other supported locales here
+      supportedLocales: const [
+        Locale('en'), // English
+        Locale('ru'), // Russian
       ],
       locale: const Locale('ru'), // Setting Russian as the default locale
       // ... other configurations
