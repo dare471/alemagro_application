@@ -26,7 +26,8 @@ class _HomePageState extends State<HomePage> {
   List<String> pageTitles = [
     "Главная",
     "Календарь",
-    "Мои клиенты"
+    "Мои клиенты",
+    "Кабинет"
   ]; // заголовки для каждой страницы
 
   int _currentIndex = 0;
@@ -110,6 +111,8 @@ class _HomePageState extends State<HomePage> {
             icon: Icon(Icons.agriculture),
             label: 'Мои клиенты',
           ),
+          const BottomNavigationBarItem(
+              icon: Icon(Icons.person), label: "Мой кабинет")
         ],
       );
     }));

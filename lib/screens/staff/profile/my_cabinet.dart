@@ -1,3 +1,4 @@
+import 'package:alemagro_application/screens/staff/profile/calc.dart';
 import 'package:alemagro_application/theme/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
@@ -78,6 +79,7 @@ class _MyCabinetState extends State<MyCabinet> {
                     Gap(5),
                     Text(userProfileData?['email'] ?? 'Нет Данных'),
                     Divider(height: 20),
+                    Calculator(),
                     // Исправлено расстояние для Divider
                     ButtonBar(
                       children: [

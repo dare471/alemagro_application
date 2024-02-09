@@ -40,15 +40,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      localizationsDelegates: [
+      localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations
             .delegate, // Include this for Cupertino localizations
       ],
-      supportedLocales: [
-        const Locale('en'), // English
-        const Locale('ru'), // Russian
+      supportedLocales: const [
+        Locale('en'), // English
+        Locale('ru'), // Russian
       ],
       locale: const Locale('ru'), // Setting Russian as the default locale
       // ... other configurations
